@@ -42,6 +42,10 @@ class GnuTar < Formula
       "--without-selinux"
     end
 
+    # On High Sierra, build system complains about various _libintl_ symbols not found,
+    # despite configure checking for how to link to libintl.
+    ENV.append "LDFLAGS", "-lintl" if MacOS.version <= :high_sierra
+
     # iconv is detected during configure process but -liconv is missing
     # from LDFLAGS as of gnu-tar 1.35. Remove once iconv linking works
     # without this. See https://savannah.gnu.org/bugs/?64441.
