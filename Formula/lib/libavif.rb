@@ -6,6 +6,7 @@ class Libavif < Formula
   license "BSD-2-Clause"
 
   bottle do
+    rebuild 1
     sha256 cellar: :any,                 arm64_sonoma:   "05684332f217fdc56842b899e1d9feeb00489d65139250c1918b5e26b008f152"
     sha256 cellar: :any,                 arm64_ventura:  "477d4c23d42b680199eeac266a90aaba8e0d6fea55d250d2bc34cbf84d1207f1"
     sha256 cellar: :any,                 arm64_monterey: "52f9ce9c929cef31034f10f52d3eb37b46f474b3a4434e1053d83d9e418c058f"
@@ -20,10 +21,12 @@ class Libavif < Formula
   depends_on "aom"
   depends_on "jpeg-turbo"
   depends_on "libpng"
+  depends_on "webp" # Uses libsharpyuv from libwebp, enabling better RGB to YUV420 conversion
 
   uses_from_macos "zlib"
 
   def install
+    ENV.prepend_path "PKG_CONFIG_PATH", Formula["webp"].opt_lib/"pkgconfig"
     system "cmake", "-S", ".", "-B", "build",
                     "-DCMAKE_INSTALL_RPATH=#{rpath}",
                     "-DAVIF_CODEC_AOM=ON",
@@ -37,7 +40,8 @@ class Libavif < Formula
   end
 
   test do
-    system bin/"avifenc", test_fixtures("test.png"), testpath/"test.avif"
+    # Testing libsharpyuv
+    system bin/"avifenc", "--yuv", "420", "--sharpyuv", test_fixtures("test.png"), testpath/"test.avif"
     assert_path_exists testpath/"test.avif"
 
     system bin/"avifdec", testpath/"test.avif", testpath/"test.jpg"
