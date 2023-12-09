@@ -33,6 +33,7 @@ class Libavif < Formula
                     "-DAVIF_BUILD_APPS=ON",
                     "-DAVIF_BUILD_EXAMPLES=OFF",
                     "-DAVIF_BUILD_TESTS=OFF",
+                    "-DAVIF_LIBSHARPYUV_ENABLED=1",
                     *std_cmake_args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"
