@@ -37,8 +37,8 @@ class Webp < Formula
   end
 
   test do
-    system bin/"cwebp", test_fixtures("test.png"), "-o", "webp_test.png"
-    system bin/"dwebp", "webp_test.png", "-o", "webp_test.webp"
-    assert_predicate testpath/"webp_test.webp", :exist?
+    system bin/"cwebp", "-sharp_yuv", test_fixtures("test.png"), "-o", "webp_test.webp"
+    system bin/"dwebp", "webp_test.webp", "-o", "webp_test.png"
+    assert_predicate testpath/"webp_test.png", :exist?
   end
 end
